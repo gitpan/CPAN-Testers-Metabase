@@ -1,90 +1,94 @@
-# Copyright (c) 2010 by David Golden. All rights reserved.
-# Licensed under Apache License, Version 2.0 (the "License").
-# You may not use this file except in compliance with the License.
-# A copy of the License was distributed with this file or you may obtain a 
-# copy of the License from http://www.apache.org/licenses/LICENSE-2.0
-
-package CPAN::Testers::Metabase;
+# 
+# This file is part of CPAN-Testers-Metabase
+# 
+# This software is Copyright (c) 2010 by David Golden.
+# 
+# This is free software, licensed under:
+# 
+#   The Apache License, Version 2.0, January 2004
+# 
 use strict;
 use warnings;
-
-our $VERSION = '1.999';
-$VERSION = eval $VERSION; ## no critic
+package CPAN::Testers::Metabase;
+BEGIN {
+  $CPAN::Testers::Metabase::VERSION = '1.999001';
+}
+# ABSTRACT: Instantiate a Metabase backend for CPAN Testers 
 
 1;
 
-__END__
 
-=begin wikidoc
 
-= NAME
+=pod
+
+=head1 NAME
 
 CPAN::Testers::Metabase - Instantiate a Metabase backend for CPAN Testers 
 
-= VERSION
+=head1 VERSION
 
-This documentation describes version %%VERSION%%.
+version 1.999001
 
-= SYNOPSIS
+=head1 SYNOPSIS
 
-    use CPAN::Testers::Metabase::AWS;
+     use CPAN::Testers::Metabase::AWS;
+ 
+     my $mb = CPAN::Testers::Metabase::AWS->new( %aws_args );
+ 
+     my $librarian = $mb->public_librarian;
 
-    my $mb = CPAN::Testers::Metabase::AWS->new( %aws_args );
-
-    my $librarian = $mb->public_librarian;
-
-= DESCRIPTION
+=head1 DESCRIPTION
 
 The CPAN::Testers::Metabase namespace is intended to span a collection
 of subclasses that instantiate specific Metabase backend storage and indexing
 capabilities for a CPAN Testers style Metabase.
 
-Each subclass consumes the [Metabase::Gateway] role and can be used by
-the [Metabase::Web] application as a data model.
+Each subclass consumes the L<Metabase::Gateway> role and can be used by
+the L<Metabase::Web> application as a data model.
 
 See specific classes for more detail:
 
-* [CPAN::Testers::Metabase::AWS] -- storage and indexing with
+=over
+
+=item *
+
+L<CPAN::Testers::Metabase::AWS> -- storage and indexing with
 Amazon Web Services
 
-* [CPAN::Testers::Metabase::Demo] -- SQLite archive and flat-file
-index (for test/demo purposes only)
+=back
 
-= BUGS
+=over
+
+=item *
+
+L<CPAN::Testers::Metabase::Demo> -- SQLite archive and flat-file
+index (for testE<sol>demo purposes only)
+
+=back
+
+=head1 BUGS
 
 Please report any bugs or feature requests using the CPAN Request Tracker  
-web interface at [http://rt.cpan.org/Dist/Display.html?Queue=CPAN-Testers-Metabase]
+web interface at L<http://rt.cpan.org/Dist/Display.html?Queue=CPAN-Testers-Metabase>
 
 When submitting a bug or request, please include a test-file or a patch to an
 existing test-file that illustrates the bug or desired feature.
 
-= SEE ALSO
+=head1 AUTHOR
 
+  David Golden <dagolden@cpan.org>
 
-= AUTHOR
+=head1 COPYRIGHT AND LICENSE
 
-David A. Golden (DAGOLDEN)
+This software is Copyright (c) 2010 by David Golden.
 
-= COPYRIGHT AND LICENSE
+This is free software, licensed under:
 
-Copyright (c) 2010 by David A. Golden. All rights reserved.
-
-Licensed under Apache License, Version 2.0 (the "License").
-You may not use this file except in compliance with the License.
-A copy of the License was distributed with this file or you may obtain a 
-copy of the License from http://www.apache.org/licenses/LICENSE-2.0
-
-Files produced as output though the use of this software, shall not be
-considered Derivative Works, but shall be considered the original work of the
-Licensor.
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-
-=end wikidoc
+  The Apache License, Version 2.0, January 2004
 
 =cut
+
+
+__END__
+
 

@@ -1,9 +1,19 @@
-package CPAN::Testers::Metabase::Demo;
+# 
+# This file is part of CPAN-Testers-Metabase
+# 
+# This software is Copyright (c) 2010 by David Golden.
+# 
+# This is free software, licensed under:
+# 
+#   The Apache License, Version 2.0, January 2004
+# 
 use strict;
 use warnings;
-
-our $VERSION = '1.999';
-$VERSION = eval $VERSION;
+package CPAN::Testers::Metabase::Demo;
+BEGIN {
+  $CPAN::Testers::Metabase::Demo::VERSION = '1.999001';
+}
+# ABSTRACT: Demo Metabase backend
 
 use Moose;
 use Metabase::Archive::SQLite;
@@ -64,90 +74,99 @@ sub __build_librarian {
 __PACKAGE__->meta->make_immutable;
 1;
 
-__END__
 
-=begin wikidoc
 
-= NAME
+=pod
+
+=head1 NAME
 
 CPAN::Testers::Metabase::Demo - Demo Metabase backend
 
-= VERSION
+=head1 VERSION
 
-This documentation describes version %%VERSION%%.
+version 1.999001
 
-= SYNOPSIS
+=head1 SYNOPSIS
 
-== Direct usage
+=head2 Direct usage
 
-  use CPAN::Testers::Metabase::Demo;
+   use CPAN::Testers::Metabase::Demo;
+ 
+   # defaults to directory on /tmp
+   my $mb = CPAN::Testers::Metabase::Demo->new;
+ 
+   $mb->public_librarian->search( %search spec );
 
-  # defaults to directory on /tmp
-  my $mb = CPAN::Testers::Metabase::Demo->new;
-  
-  $mb->public_librarian->search( %search spec );
+=head2 Metabase::Web config
 
-== Metabase::Web config
+   ---
+   Model::Metabase:
+     class: CPAN::Testers::Metabase::Demo
 
-  ---
-  Model::Metabase:
-    class: CPAN::Testers::Metabase::Demo
-
-= DESCRIPTION
+=head1 DESCRIPTION
 
 This is a demo Metabase backend that uses SQLite and a flat file in
 a temporary directory.
 
-= USAGE
+=head1 USAGE
 
-== new
+=head2 new
 
-  my $mb = CPAN::Testers::Metabase::AWS->new( 
-    data_directory => "/tmp/my-metabase"
-  );
+   my $mb = CPAN::Testers::Metabase::AWS->new( 
+     data_directory => "/tmp/my-metabase"
+   );
 
-Arguments for {new}:
+Arguments for C<<< new >>>:
 
-* {data_directory} -- optional -- directory path to store data files.  Defaults
-to a [File::Temp] temporary directory
+=over
 
-= BUGS
+=item *
+
+C<<< data_directory >>> -- optional -- directory path to store data files.  Defaults
+to a L<File::Temp> temporary directory
+
+=back
+
+=head1 BUGS
 
 Please report any bugs or feature requests using the CPAN Request Tracker  
-web interface at [http://rt.cpan.org/Dist/Display.html?Queue=CPAN-Testers-Metabase]
+web interface at L<http://rt.cpan.org/Dist/Display.html?Queue=CPAN-Testers-Metabase>
 
 When submitting a bug or request, please include a test-file or a patch to an
 existing test-file that illustrates the bug or desired feature.
 
-= SEE ALSO
+=head1 SEE ALSO
 
-* [CPAN::Testers::Metabase]
-* [Metabase::Gateway]
-* [Metabase::Web]
+=over
 
-= AUTHOR
+=item *
 
-David A. Golden (DAGOLDEN)
+L<CPAN::Testers::Metabase>
 
-= COPYRIGHT AND LICENSE
+=item *
 
-Copyright (c) 2010 by David A. Golden. All rights reserved.
+L<Metabase::Gateway>
 
-Licensed under Apache License, Version 2.0 (the "License").
-You may not use this file except in compliance with the License.
-A copy of the License was distributed with this file or you may obtain a 
-copy of the License from http://www.apache.org/licenses/LICENSE-2.0
+=item *
 
-Files produced as output though the use of this software, shall not be
-considered Derivative Works, but shall be considered the original work of the
-Licensor.
+L<Metabase::Web>
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+=back
 
-=end wikidoc
+=head1 AUTHOR
+
+  David Golden <dagolden@cpan.org>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is Copyright (c) 2010 by David Golden.
+
+This is free software, licensed under:
+
+  The Apache License, Version 2.0, January 2004
 
 =cut
+
+
+__END__
+

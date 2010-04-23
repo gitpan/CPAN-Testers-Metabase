@@ -1,9 +1,19 @@
-package CPAN::Testers::Metabase::AWS;
+# 
+# This file is part of CPAN-Testers-Metabase
+# 
+# This software is Copyright (c) 2010 by David Golden.
+# 
+# This is free software, licensed under:
+# 
+#   The Apache License, Version 2.0, January 2004
+# 
 use strict;
 use warnings;
-
-our $VERSION = '1.999';
-$VERSION = eval $VERSION;
+package CPAN::Testers::Metabase::AWS;
+BEGIN {
+  $CPAN::Testers::Metabase::AWS::VERSION = '1.999001';
+}
+# ABSTRACT: Metabase backend on Amazon Web Services
 
 use Moose;
 use Metabase::Archive::S3;
@@ -62,7 +72,7 @@ sub __build_librarian {
 
   my $bucket      = $self->bucket;
   my $namespace   = $self->namespace;
-  my $s3_prefix   = "metabase/${namespace}/${subspace}";
+  my $s3_prefix   = "metabase/${namespace}/${subspace}/";
   my $sdb_domain  = "${bucket}.metabase.${namespace}.${subspace}";
 
   return Metabase::Librarian->new(
@@ -72,6 +82,7 @@ sub __build_librarian {
       bucket            => $self->bucket,
       prefix            => $s3_prefix,
       compressed        => 1,
+      retry             => 1,
     ),
     index => Metabase::Index::SimpleDB->new(
       access_key_id     => $self->access_key_id,
@@ -84,140 +95,173 @@ sub __build_librarian {
 __PACKAGE__->meta->make_immutable;
 1;
 
-__END__
 
-=begin wikidoc
 
-= NAME
+=pod
+
+=head1 NAME
 
 CPAN::Testers::Metabase::AWS - Metabase backend on Amazon Web Services
 
-= VERSION
+=head1 VERSION
 
-This documentation describes version %%VERSION%%.
+version 1.999001
 
-= SYNOPSIS
+=head1 SYNOPSIS
 
-== Direct usage
+=head2 Direct usage
 
-  use CPAN::Testers::Metabase::AWS;
+   use CPAN::Testers::Metabase::AWS;
+ 
+   my $mb = CPAN::Testers::Metabase::AWS->new( 
+     bucket    => 'myS3bucket',
+     namespace => 'prod' 
+   );
+ 
+   $mb->public_librarian->search( %search spec );
+   ...
 
-  my $mb = CPAN::Testers::Metabase::AWS->new( 
-    bucket    => 'myS3bucket',
-    namespace => 'prod' 
-  );
+=head2 Metabase::Web config
 
-  $mb->public_librarian->search( %search spec );
-  ...
+   ---
+   Model::Metabase:
+     class: CPAN::Testers::Metabase::AWS
+       args:
+         bucket: myS3bucket
+         namespace: prod
 
-== Metabase::Web config
-
-  ---
-  Model::Metabase:
-    class: CPAN::Testers::Metabase::AWS
-      args:
-        bucket: myS3bucket
-        namespace: prod
-
-= DESCRIPTION
+=head1 DESCRIPTION
 
 This class instantiates a Metabase backend on the S3 and SimpleDB Amazon 
-Web Services (AWS).  It uses [Net::Amazon::Config] to provide user credentials
-and the [Metabase::Gateway] Role to provide actual functionality.  As such,
+Web Services (AWS).  It uses L<Net::Amazon::Config> to provide user credentials
+and the L<Metabase::Gateway> Role to provide actual functionality.  As such,
 it is mostly glue to get the right credentials to setup AWS clients and provide
 them with standard resource names.
 
-For example, given the {bucket} "example" and the {namespace} "alpha",
+For example, given the C<<< bucket >>> "example" and the C<<< namespace >>> "alpha",
 the following resource names would be used:
 
-  Public S3: http://example.s3.amazonaws.com/metabase/alpha/public/*
-  Public SDB domain: example.metabase.alpha.public
+   Public S3: http://example.s3.amazonaws.com/metabase/alpha/public/*
+   Public SDB domain: example.metabase.alpha.public
+ 
+   Private S3: http://example.s3.amazonaws.com/metabase/alpha/private/*
+   Private SDB domain: example.metabase.alpha.private
 
-  Private S3: http://example.s3.amazonaws.com/metabase/alpha/private/*
-  Private SDB domain: example.metabase.alpha.private
+=head1 USAGE
 
-= USAGE
+=head2 new
 
-== new
+   my $mb = CPAN::Testers::Metabase::AWS->new( 
+     bucket    => 'myS3bucket',
+     namespace     => 'prod', 
+     profile_name  => 'cpantesters',
+   );
 
-  my $mb = CPAN::Testers::Metabase::AWS->new( 
-    bucket    => 'myS3bucket',
-    namespace     => 'prod', 
-    profile_name  => 'cpantesters',
-  );
+Arguments for C<<< new >>>:
 
-Arguments for {new}:
+=over
 
-* {bucket} -- required -- the Amazon S3 bucket name to hold both public and private
+=item *
+
+C<<< bucket >>> -- required -- the Amazon S3 bucket name to hold both public and private
 fact content.  Bucket names must be unique across all of AWS.  The bucket
 name is also used as part of the SimpleDB namespace for consistency.
-* {namespace} -- required -- a short phrase that uniquely identifies this
+
+=item *
+
+C<<< namespace >>> -- required -- a short phrase that uniquely identifies this
 metabase.  E.g. "dev", "test" or "prod".  It is used to specify
 specific locations within the S3 bucket and to uniquely identify a SimpleDB 
 domain for indexing.
-* {amazon_config} -- optional -- a [Net::Amazon::Config] object containing
+
+=item *
+
+C<<< amazon_config >>> -- optional -- a L<Net::Amazon::Config> object containing
 Amazon Web Service credentials.  If not provided, one will be created using
 the default location for the config file.
-* {profile_name} -- optional -- the name of a profile for use with 
+
+=item *
+
+C<<< profile_name >>> -- optional -- the name of a profile for use with 
 Net::Amazon::Config.  If not provided, it defaults to 'cpantesters'.
 
-== access_key_id
+=back
+
+=head2 access_key_id
 
 Returns the AWS Access Key ID.
 
-== secret_access_key
+=head2 secret_access_key
 
 Returns the AWS Secret Access Key
 
-== Metabase::Gateway Role
+=head2 Metabase::Gateway Role
 
-This class does the [Metabase::Gateway] role, including the following
+This class does the L<Metabase::Gateway> role, including the following
 methods:
 
-* {handle_submission}
-* {handle_registration}
-* {enqueue}
+=over
 
-see [Metabase::Gateway] for more.
+=item *
 
-= BUGS
+C<<< handle_submission >>>
+
+=item *
+
+C<<< handle_registration >>>
+
+=item *
+
+C<<< enqueue >>>
+
+=back
+
+see L<Metabase::Gateway> for more.
+
+=head1 BUGS
 
 Please report any bugs or feature requests using the CPAN Request Tracker  
-web interface at [http://rt.cpan.org/Dist/Display.html?Queue=CPAN-Testers-Metabase]
+web interface at L<http://rt.cpan.org/Dist/Display.html?Queue=CPAN-Testers-Metabase>
 
 When submitting a bug or request, please include a test-file or a patch to an
 existing test-file that illustrates the bug or desired feature.
 
-= SEE ALSO
+=head1 SEE ALSO
 
-* [CPAN::Testers::Metabase]
-* [Metabase::Gateway]
-* [Metabase::Web]
-* [Net::Amazon::Config]
+=over
 
-= AUTHOR
+=item *
 
-David A. Golden (DAGOLDEN)
+L<CPAN::Testers::Metabase>
 
-= COPYRIGHT AND LICENSE
+=item *
 
-Copyright (c) 2010 by David A. Golden. All rights reserved.
+L<Metabase::Gateway>
 
-Licensed under Apache License, Version 2.0 (the "License").
-You may not use this file except in compliance with the License.
-A copy of the License was distributed with this file or you may obtain a 
-copy of the License from http://www.apache.org/licenses/LICENSE-2.0
+=item *
 
-Files produced as output though the use of this software, shall not be
-considered Derivative Works, but shall be considered the original work of the
-Licensor.
+L<Metabase::Web>
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+=item *
 
-=end wikidoc
+L<Net::Amazon::Config>
+
+=back
+
+=head1 AUTHOR
+
+  David Golden <dagolden@cpan.org>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is Copyright (c) 2010 by David Golden.
+
+This is free software, licensed under:
+
+  The Apache License, Version 2.0, January 2004
 
 =cut
+
+
+__END__
+
