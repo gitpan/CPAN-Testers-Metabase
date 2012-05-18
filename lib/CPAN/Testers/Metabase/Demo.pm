@@ -1,24 +1,13 @@
-# 
-# This file is part of CPAN-Testers-Metabase
-# 
-# This software is Copyright (c) 2010 by David Golden.
-# 
-# This is free software, licensed under:
-# 
-#   The Apache License, Version 2.0, January 2004
-# 
 use strict;
 use warnings;
 package CPAN::Testers::Metabase::Demo;
-BEGIN {
-  $CPAN::Testers::Metabase::Demo::VERSION = '1.999001';
-}
 # ABSTRACT: Demo Metabase backend
+our $VERSION = '1.999002'; # VERSION
 
 use Moose;
-use Metabase::Archive::SQLite;
-use Metabase::Index::FlatFile;
-use Metabase::Librarian;
+use Metabase::Archive::SQLite 1.000;
+use Metabase::Index::FlatFile 1.000;
+use Metabase::Librarian 1.000;
 use Path::Class;
 use File::Temp;
 use namespace::autoclean;
@@ -84,7 +73,7 @@ CPAN::Testers::Metabase::Demo - Demo Metabase backend
 
 =head1 VERSION
 
-version 1.999001
+version 1.999002
 
 =head1 SYNOPSIS
 
@@ -127,14 +116,6 @@ to a L<File::Temp> temporary directory
 
 =back
 
-=head1 BUGS
-
-Please report any bugs or feature requests using the CPAN Request Tracker  
-web interface at L<http://rt.cpan.org/Dist/Display.html?Queue=CPAN-Testers-Metabase>
-
-When submitting a bug or request, please include a test-file or a patch to an
-existing test-file that illustrates the bug or desired feature.
-
 =head1 SEE ALSO
 
 =over
@@ -155,11 +136,11 @@ L<Metabase::Web>
 
 =head1 AUTHOR
 
-  David Golden <dagolden@cpan.org>
+David Golden <dagolden@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is Copyright (c) 2010 by David Golden.
+This software is Copyright (c) 2012 by David Golden.
 
 This is free software, licensed under:
 

@@ -3,44 +3,54 @@ NAME
     Testers
 
 VERSION
-    version 1.999001
+    version 1.999002
 
 SYNOPSIS
-         use CPAN::Testers::Metabase::AWS;
- 
-         my $mb = CPAN::Testers::Metabase::AWS->new( %aws_args );
- 
-         my $librarian = $mb->public_librarian;
+      use CPAN::Testers::Metabase::Demo;
+
+      # defaults to directory on /tmp
+      my $mb = CPAN::Testers::Metabase::Demo->new;
+
+      $mb->public_librarian->search( %search spec );
 
 DESCRIPTION
     The CPAN::Testers::Metabase namespace is intended to span a collection
-    of subclasses that instantiate specific Metabase backend storage and
+    of classes that instantiate specific Metabase backend storage and
     indexing capabilities for a CPAN Testers style Metabase.
 
-    Each subclass consumes the Metabase::Gateway role and can be used by the
+    Each class consumes the Metabase::Gateway role and can be used by the
     Metabase::Web application as a data model.
 
     See specific classes for more detail:
 
-    *   CPAN::Testers::Metabase::AWS -- storage and indexing with Amazon Web
-        Services
+    *   [CPAN::Testers::Metabase::AWS] -- storage and indexing with Amazon
+        Web Services
 
-    *   CPAN::Testers::Metabase::Demo -- SQLite archive and flat-file index
-        (for test/demo purposes only)
+    *   [CPAN::Testers::Metabase::MongoDB] -- storage and indexing with
+        MongoDB
 
-BUGS
-    Please report any bugs or feature requests using the CPAN Request
-    Tracker web interface at
-    <http://rt.cpan.org/Dist/Display.html?Queue=CPAN-Testers-Metabase>
+    *   [CPAN::Testers::Metabase::Demo] -- SQLite archive and flat-file
+        index (for test/demo purposes only)
 
-    When submitting a bug or request, please include a test-file or a patch
-    to an existing test-file that illustrates the bug or desired feature.
+SUPPORT
+  Bugs / Feature Requests
+    Please report any bugs or feature requests through the issue tracker at
+    <http://rt.cpan.org/Public/Dist/Display.html?Name=CPAN-Testers-Metabase>
+    . You will be notified automatically of any progress on your issue.
+
+  Source Code
+    This is open source software. The code repository is available for
+    public review and contribution under the terms of the license.
+
+    <https://github.com/dagolden/cpan-testers-metabase>
+
+      git clone https://github.com/dagolden/cpan-testers-metabase.git
 
 AUTHOR
-      David Golden <dagolden@cpan.org>
+    David Golden <dagolden@cpan.org>
 
 COPYRIGHT AND LICENSE
-    This software is Copyright (c) 2010 by David Golden.
+    This software is Copyright (c) 2012 by David Golden.
 
     This is free software, licensed under:
 

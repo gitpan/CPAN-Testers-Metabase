@@ -2,47 +2,57 @@
 use strict;
 use warnings;
 
- BEGIN { require 5.006; } 
+use 5.006;
 
-use ExtUtils::MakeMaker 6.31;
+use ExtUtils::MakeMaker 6.30;
 
 
 
 my %WriteMakefileArgs = (
-                       'test' => {
-                                   'TESTS' => 't/*.t'
-                                 },
-                       'NAME' => 'CPAN::Testers::Metabase',
-                       'DISTNAME' => 'CPAN-Testers-Metabase',
-                       'CONFIGURE_REQUIRES' => {
-                                                 'ExtUtils::MakeMaker' => '6.31'
-                                               },
-                       'AUTHOR' => 'David Golden <dagolden@cpan.org>',
-                       'BUILD_REQUIRES' => {},
-                       'ABSTRACT' => 'Instantiate a Metabase backend for CPAN Testers ',
-                       'EXE_FILES' => [],
-                       'VERSION' => '1.999001',
-                       'PREREQ_PM' => {
-                                        'namespace::autoclean' => '0.09',
-                                        'Metabase::Archive::SQLite' => '0.009',
-                                        'Metabase::Index::SimpleDB' => '0.009',
-                                        'File::Spec' => '3.31',
-                                        'Net::Amazon::Config' => '0.001',
-                                        'Metabase::Index::FlatFile' => '0.009',
-                                        'Metabase::Librarian' => '0.009',
-                                        'Test::More' => '0.88',
-                                        'Metabase::Archive::S3' => '0.009',
-                                        'File::Find' => '0',
-                                        'File::Temp' => '0.20',
-                                        'Path::Class' => '0.17',
-                                        'Moose' => '0.93'
-                                      },
-                       'LICENSE' => 'apache'
-                     );
+  "ABSTRACT" => "Instantiate a Metabase backend for CPAN Testers ",
+  "AUTHOR" => "David Golden <dagolden\@cpan.org>",
+  "BUILD_REQUIRES" => {
+    "File::Find" => 0,
+    "Test::More" => 0
+  },
+  "CONFIGURE_REQUIRES" => {
+    "ExtUtils::MakeMaker" => "6.30"
+  },
+  "DISTNAME" => "CPAN-Testers-Metabase",
+  "EXE_FILES" => [],
+  "LICENSE" => "apache",
+  "NAME" => "CPAN::Testers::Metabase",
+  "PREREQ_PM" => {
+    "File::Temp" => 0,
+    "Metabase::Archive::SQLite" => "1.000",
+    "Metabase::Gateway" => 0,
+    "Metabase::Index::FlatFile" => "1.000",
+    "Metabase::Librarian" => "1.000",
+    "Moose" => 0,
+    "Path::Class" => 0,
+    "namespace::autoclean" => 0,
+    "strict" => 0,
+    "warnings" => 0
+  },
+  "VERSION" => "1.999002",
+  "test" => {
+    "TESTS" => "t/*.t"
+  }
+);
 
 
-delete $WriteMakefileArgs{BUILD_REQUIRES}
-  unless eval { ExtUtils::MakeMaker->VERSION(6.56) };
+unless ( eval { ExtUtils::MakeMaker->VERSION(6.56) } ) {
+  my $br = delete $WriteMakefileArgs{BUILD_REQUIRES};
+  my $pp = $WriteMakefileArgs{PREREQ_PM};
+  for my $mod ( keys %$br ) {
+    if ( exists $pp->{$mod} ) {
+      $pp->{$mod} = $br->{$mod} if $br->{$mod} > $pp->{$mod};
+    }
+    else {
+      $pp->{$mod} = $br->{$mod};
+    }
+  }
+}
 
 delete $WriteMakefileArgs{CONFIGURE_REQUIRES}
   unless eval { ExtUtils::MakeMaker->VERSION(6.52) };
